@@ -1,0 +1,64 @@
+kubelet:
+  serviceMonitor:
+    cAdvisorRelabelings:
+      - action: replace
+        replacement: rancher-desktop
+        targetLabel: cluster
+      - targetLabel: metrics_path
+        sourceLabels:
+          - "__metrics_path__"
+      - targetLabel: "instance"
+        sourceLabels:
+          - "node"
+
+defaultRules:
+  additionalRuleLabels:
+    cluster: rancher-desktop
+
+"kube-state-metrics":
+  prometheus:
+    monitor:
+      relabelings:
+        - action: replace
+          replacement: rancher-desktop
+          targetLabel: cluster
+        - targetLabel: "instance"
+          sourceLabels:
+            - "__meta_kubernetes_pod_node_name"
+
+"prometheus-node-exporter":
+  prometheus:
+    monitor:
+      relabelings:
+        - action: replace
+          replacement: rancher-desktop
+          targetLabel: cluster
+        - targetLabel: "instance"
+          sourceLabels:
+            - "__meta_kubernetes_pod_node_name"
+
+prometheus:
+  monitor:
+    relabelings:
+      - action: replace
+        replacement: rancher-desktop
+        targetLabel: cluster
+
+grafana:
+  enabled: false
+  additionalDataSources:
+  - name: loki
+    access: proxy
+    basicAuth: false
+    editable: false
+    jsonData:
+        tlsSkipVerify: true
+    orgId: 1
+    jsonData:
+      httpHeaderName1: 'X-Scope-OrgID'
+    secureJsonData:
+      httpHeaderValue1: 'tenant-1'
+    type: loki
+    url: http://loki-gateway
+    version: 1
+
